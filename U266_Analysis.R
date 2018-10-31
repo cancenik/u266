@@ -214,15 +214,23 @@ ribo_fit3 <- eBayes(ribo_fit3)
 rna_fit3 <- contrasts.fit(rna_fit, contrast.matrix2)
 rna_fit3 <- eBayes(rna_fit3)
 
-topTable(ribo_fit3)
+
+write.csv (topTable(ribo_fit3, coef = 1, number = 146), 
+           file = '~/Desktop/SignificantRibo_ExpressionChange_siRNAtreatment.csv' ) 
 results.ribo2 <- decideTests(ribo_fit3, p.value=0.05, lfc=log2(1.5))
+# results.ribo2 <- decideTests(ribo_fit3, p.value=0.05, lfc=log2(1))
+# We don't have any significant changes in the 1-1.5x change range for Ribo
 apply (results.ribo2, 2, function (x) { sum ( x ==1 )} ) 
 apply (results.ribo2, 2, function (x) { sum ( x == -1 )} ) 
 
-topTable(rna_fit3)
+write.csv (topTable(rna_fit3, coef = 1, number = 225), 
+           file = '~/Desktop/SignificantRNA_ExpressionChange_siRNAtreatment.csv' ) 
 results.rna2 <- decideTests(rna_fit3, p.value=0.05, lfc=log2(1.5))
+#results.rna2 <- decideTests(rna_fit3, p.value=0.05, lfc=log2(1)
+# 225 at no fold-change cutoff vs 181 at 1.5
 apply (results.rna2, 2, function (x) { sum ( x ==1 )} ) 
 apply (results.rna2, 2, function (x) { sum ( x == -1 )} ) 
+
 
 te_factor <- paste(type, sample_labels, sep=".")
 te_factor <- factor(te_factor, levels=unique(te_factor))
@@ -260,4 +268,5 @@ plot ( si_ribo_mean[rna_exp] /   si_rna_mean[rna_exp],
        xlim =c(0,2), ylim = c(0,2) )
 abline(a=0, b=1)
 ## TODO
+# Look at other factors in DNA Damage. 
 # We should look at the species to total count relationship to remove PCR duplicates
